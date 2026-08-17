@@ -3,65 +3,79 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CertTrack Dashboard</title>
+    <meta name="description" content="A calm, practical workspace for keeping certifications current.">
+    <title>CertTrack — certification workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/dashboard.css">
     <script defer src="/js/dashboard.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f6f8fb; color: #172033; }
-        header { background: #172033; color: #fff; padding: 1rem 2rem; }
-        main { padding: 2rem; display: grid; gap: 1.5rem; }
-        section { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 8px 24px rgba(18, 38, 63, .08); }
-        form { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; }
-        label { display: grid; gap: .25rem; font-size: .9rem; }
-        input, button { border: 1px solid #ccd5e1; border-radius: 8px; padding: .65rem .75rem; }
-        button { background: #2563eb; color: #fff; border: 0; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border-bottom: 1px solid #e5e7eb; padding: .75rem; text-align: left; }
-        .badge { border-radius: 999px; padding: .25rem .6rem; color: #fff; font-size: .8rem; }
-        .ACTIVE { background: #16a34a; }
-        .EXPIRING_SOON { background: #d97706; }
-        .EXPIRED { background: #dc2626; }
-        .muted { color: #64748b; }
-        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
-        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-    </style>
 </head>
 <body>
-<header>
-    <h1>CertTrack</h1>
-    <p class="muted">Certification expiry and skill coverage dashboard</p>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="topbar">
+    <a class="brand" href="/dashboard" aria-label="CertTrack home"><span class="brand-mark">C</span><span>CertTrack</span></a>
+    <div class="topbar-meta"><span class="eyebrow">PERSONAL WORKSPACE</span><button id="logout-button" class="button button-quiet" type="button">Sign out</button></div>
 </header>
-<main>
-    <section>
-        <h2>Login</h2>
-        <form id="login-form">
-            <label>Username <input id="username" value="admin" autocomplete="username" required></label>
-            <label>Password <input id="password" type="password" value="password" autocomplete="current-password" required></label>
-            <button type="submit">Get Token</button>
-            <span id="login-status" class="muted"></span>
+
+<main id="main-content" class="shell">
+    <section class="intro" aria-labelledby="page-title">
+        <div>
+            <p class="eyebrow accent">CERTIFICATION CONTROL CENTER</p>
+            <h1 id="page-title">Keep your credentials<br><em>ahead of time.</em></h1>
+            <p class="intro-copy">A clear view of what is current, what needs attention, and where your skills are growing.</p>
+        </div>
+        <div class="login-panel" id="login-panel">
+            <div class="login-heading"><span class="status-dot"></span><span>Secure access</span></div>
+            <form id="login-form">
+                <label>Username<input id="username" value="admin" autocomplete="username" required></label>
+                <label>Password<input id="password" type="password" value="password" autocomplete="current-password" required></label>
+                <button class="button button-primary" type="submit">Open workspace <span aria-hidden="true">↗</span></button>
+                <span id="login-status" class="form-status" role="status"></span>
+            </form>
+        </div>
+    </section>
+
+    <section class="stats-grid" aria-label="Certification summary">
+        <article class="stat-card stat-card-featured"><span class="stat-label">TOTAL CREDENTIALS</span><strong id="total-count">—</strong><span class="stat-detail">Across your workspace</span></article>
+        <article class="stat-card"><span class="stat-label">CURRENT</span><strong id="active-count">—</strong><span class="stat-detail positive">In good standing</span></article>
+        <article class="stat-card"><span class="stat-label">EXPIRING SOON</span><strong id="expiring-count">—</strong><span class="stat-detail warning">Within 30 days</span></article>
+        <article class="stat-card"><span class="stat-label">EXPIRED</span><strong id="expired-count">—</strong><span class="stat-detail negative">Needs renewal</span></article>
+    </section>
+
+    <div class="content-grid">
+        <section class="panel certifications-panel" aria-labelledby="certifications-title">
+            <div class="panel-heading">
+                <div><p class="eyebrow">YOUR RECORDS</p><h2 id="certifications-title">Certifications</h2></div>
+                <button class="button button-primary" id="add-cert-button" type="button">+ Add certification</button>
+            </div>
+            <div class="toolbar">
+                <label class="search-field"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search title, issuer, or skill" aria-label="Search certifications"></label>
+                <label class="select-field"><span class="sr-only">Filter by status</span><select id="status-filter"><option value="">All statuses</option><option value="ACTIVE">Current</option><option value="EXPIRING_SOON">Expiring soon</option><option value="EXPIRED">Expired</option></select></label>
+            </div>
+            <div class="table-wrap"><table><thead><tr><th>Credential</th><th>Issuer</th><th>Expiry</th><th>Status</th><th>Skills</th></tr></thead><tbody id="certification-table"><tr><td colspan="5" class="empty-cell">Sign in to load your certifications.</td></tr></tbody></table></div>
+            <p id="table-status" class="table-status" role="status"></p>
+        </section>
+        <aside class="panel skills-panel" aria-labelledby="skills-title">
+            <div class="panel-heading"><div><p class="eyebrow">COVERAGE</p><h2 id="skills-title">Skill map</h2></div><span class="panel-icon">✦</span></div>
+            <p class="panel-copy">The skills represented across your credentials.</p>
+            <div class="chart-wrap"><canvas id="skill-chart"></canvas><div id="chart-empty" class="chart-empty">Add certifications to see your skill map.</div></div>
+        </aside>
+    </div>
+
+    <section class="panel add-panel" id="add-panel" hidden aria-labelledby="add-title">
+        <div class="panel-heading"><div><p class="eyebrow accent">NEW RECORD</p><h2 id="add-title">Add a certification</h2></div><button id="close-add-button" class="icon-button" type="button" aria-label="Close form">×</button></div>
+        <form id="certification-form" class="cert-form">
+            <label>Title<input id="cert-title" required maxlength="160" placeholder="e.g. AWS Certified Developer"></label>
+            <label>Issuer<input id="cert-issuer" required maxlength="160" placeholder="e.g. Amazon Web Services"></label>
+            <label>Issue date<input id="cert-issue-date" type="date" required></label>
+            <label>Expiry date<input id="cert-expiry-date" type="date" required></label>
+            <label class="wide-field">Skills <span class="field-hint">Separate with commas</span><input id="cert-skills" required placeholder="Cloud, Java, Security"></label>
+            <label class="wide-field">Credential URL <span class="field-hint">Optional</span><input id="cert-url" type="url" placeholder="https://..."></label>
+            <div class="form-actions"><button class="button button-primary" type="submit">Save certification</button><span id="cert-form-status" class="form-status" role="status"></span></div>
         </form>
     </section>
-    <div class="grid">
-        <section>
-            <h2>Certifications</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Issuer</th>
-                    <th>Expiry</th>
-                    <th>Status</th>
-                    <th>Skills</th>
-                </tr>
-                </thead>
-                <tbody id="certification-table"></tbody>
-            </table>
-        </section>
-        <section>
-            <h2>Skill Tags</h2>
-            <canvas id="skill-chart"></canvas>
-        </section>
-    </div>
 </main>
 </body>
 </html>

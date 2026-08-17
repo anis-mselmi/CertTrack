@@ -19,9 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class CertificationController {
 
     private final CertificationService service;
+    private final CertificationSummaryService summaryService;
 
-    public CertificationController(CertificationService service) {
+    public CertificationController(CertificationService service, CertificationSummaryService summaryService) {
         this.service = service;
+        this.summaryService = summaryService;
+    }
+
+    @GetMapping("/summary")
+    public CertificationSummaryResponse summary() {
+        return summaryService.summarize();
     }
 
     @GetMapping

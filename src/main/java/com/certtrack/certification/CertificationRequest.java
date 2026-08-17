@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import java.util.Set;
 import org.hibernate.validator.constraints.URL;
@@ -16,4 +17,8 @@ public record CertificationRequest(
         @URL @Size(max = 500) String credentialUrl,
         Set<@NotBlank @Size(max = 60) String> skillTags
 ) {
+    @AssertTrue(message = "issueDate must be on or before expiryDate")
+    public boolean hasValidDateRange() {
+        return issueDate == null || expiryDate == null || !issueDate.isAfter(expiryDate);
+    }
 }
