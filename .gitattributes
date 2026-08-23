@@ -1,0 +1,4 @@
+# Exclude HTML/CSS/JS frontend files from GitHub repository language stats
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+*.js linguist-detectable=false
