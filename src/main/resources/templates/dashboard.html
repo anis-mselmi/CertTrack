@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A calm, practical workspace for keeping certifications current.">
+    <meta name="description" content="A calm instrument for watching your certifications age toward expiry.">
     <title>CertTrack — certification workspace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/css/dashboard.css">
     <script defer src="/js/dashboard.js"></script>
@@ -16,15 +16,15 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
 <header class="topbar">
     <a class="brand" href="/dashboard" aria-label="CertTrack home"><span class="brand-mark">C</span><span>CertTrack</span></a>
-    <div class="topbar-meta"><span class="eyebrow">PERSONAL WORKSPACE</span><button id="logout-button" class="button button-quiet" type="button">Sign out</button></div>
+    <div class="topbar-meta"><span class="eyebrow">Personal workspace</span><button id="logout-button" class="button button-quiet" type="button">Sign out</button></div>
 </header>
 
 <main id="main-content" class="shell">
-    <section class="intro" aria-labelledby="page-title">
+    <section class="intro reveal" aria-labelledby="page-title">
         <div>
-            <p class="eyebrow accent">CERTIFICATION CONTROL CENTER</p>
-            <h1 id="page-title">Keep your credentials<br><em>ahead of time.</em></h1>
-            <p class="intro-copy">A clear view of what is current, what needs attention, and where your skills are growing.</p>
+            <p class="eyebrow accent">Certification control center</p>
+            <h1 id="page-title">Every credential,<br><em>ahead of its expiry.</em></h1>
+            <p class="intro-copy">See what's current, what's about to lapse, and how much runway each certification has left — all on one screen.</p>
         </div>
         <div class="login-panel" id="login-panel">
             <div class="login-heading"><span class="status-dot"></span><span>Secure access</span></div>
@@ -38,34 +38,34 @@
     </section>
 
     <section class="stats-grid" aria-label="Certification summary">
-        <article class="stat-card stat-card-featured"><span class="stat-label">TOTAL CREDENTIALS</span><strong id="total-count">—</strong><span class="stat-detail">Across your workspace</span></article>
-        <article class="stat-card"><span class="stat-label">CURRENT</span><strong id="active-count">—</strong><span class="stat-detail positive">In good standing</span></article>
-        <article class="stat-card"><span class="stat-label">EXPIRING SOON</span><strong id="expiring-count">—</strong><span class="stat-detail warning">Within 30 days</span></article>
-        <article class="stat-card"><span class="stat-label">EXPIRED</span><strong id="expired-count">—</strong><span class="stat-detail negative">Needs renewal</span></article>
+        <article class="stat-card stat-card-featured reveal" style="animation-delay:.05s"><span class="stat-label">Total credentials</span><strong id="total-count">—</strong><span class="stat-detail">Across your workspace</span></article>
+        <article class="stat-card is-positive reveal" style="animation-delay:.1s"><span class="stat-label">Current</span><strong id="active-count">—</strong><span class="stat-detail positive">In good standing</span></article>
+        <article class="stat-card is-warning reveal" style="animation-delay:.15s"><span class="stat-label">Expiring soon</span><strong id="expiring-count">—</strong><span class="stat-detail warning">Within 30 days</span></article>
+        <article class="stat-card is-negative reveal" style="animation-delay:.2s"><span class="stat-label">Expired</span><strong id="expired-count">—</strong><span class="stat-detail negative">Needs renewal</span></article>
     </section>
 
     <div class="content-grid">
-        <section class="panel certifications-panel" aria-labelledby="certifications-title">
+        <section class="panel certifications-panel reveal" style="animation-delay:.25s" aria-labelledby="certifications-title">
             <div class="panel-heading">
-                <div><p class="eyebrow">YOUR RECORDS</p><h2 id="certifications-title">Certifications</h2></div>
+                <div><p class="eyebrow">Your records</p><h2 id="certifications-title">Certifications</h2></div>
                 <button class="button button-primary" id="add-cert-button" type="button">+ Add certification</button>
             </div>
             <div class="toolbar">
                 <label class="search-field"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search title, issuer, or skill" aria-label="Search certifications"></label>
                 <label class="select-field"><span class="sr-only">Filter by status</span><select id="status-filter"><option value="">All statuses</option><option value="ACTIVE">Current</option><option value="EXPIRING_SOON">Expiring soon</option><option value="EXPIRED">Expired</option></select></label>
             </div>
-            <div class="table-wrap"><table><thead><tr><th>Credential</th><th>Issuer</th><th>Expiry</th><th>Status</th><th>Skills</th></tr></thead><tbody id="certification-table"><tr><td colspan="5" class="empty-cell">Sign in to load your certifications.</td></tr></tbody></table></div>
+            <div class="table-wrap"><table><thead><tr><th>Credential</th><th>Issuer</th><th>Validity runway</th><th>Status</th><th>Skills</th></tr></thead><tbody id="certification-table"><tr><td colspan="5" class="empty-cell">Sign in to load your certifications.</td></tr></tbody></table></div>
             <p id="table-status" class="table-status" role="status"></p>
         </section>
-        <aside class="panel skills-panel" aria-labelledby="skills-title">
-            <div class="panel-heading"><div><p class="eyebrow">COVERAGE</p><h2 id="skills-title">Skill map</h2></div><span class="panel-icon">✦</span></div>
+        <aside class="panel skills-panel reveal" style="animation-delay:.3s" aria-labelledby="skills-title">
+            <div class="panel-heading"><div><p class="eyebrow">Coverage</p><h2 id="skills-title">Skill map</h2></div><span class="panel-icon">✦</span></div>
             <p class="panel-copy">The skills represented across your credentials.</p>
             <div class="chart-wrap"><canvas id="skill-chart"></canvas><div id="chart-empty" class="chart-empty">Add certifications to see your skill map.</div></div>
         </aside>
     </div>
 
     <section class="panel add-panel" id="add-panel" hidden aria-labelledby="add-title">
-        <div class="panel-heading"><div><p class="eyebrow accent">NEW RECORD</p><h2 id="add-title">Add a certification</h2></div><button id="close-add-button" class="icon-button" type="button" aria-label="Close form">×</button></div>
+        <div class="panel-heading"><div><p class="eyebrow accent">New record</p><h2 id="add-title">Add a certification</h2></div><button id="close-add-button" class="icon-button" type="button" aria-label="Close form">×</button></div>
         <form id="certification-form" class="cert-form">
             <label>Title<input id="cert-title" required maxlength="160" placeholder="e.g. AWS Certified Developer"></label>
             <label>Issuer<input id="cert-issuer" required maxlength="160" placeholder="e.g. Amazon Web Services"></label>

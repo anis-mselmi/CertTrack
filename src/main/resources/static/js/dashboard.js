@@ -82,10 +82,34 @@ function renderTableFromFilters() {
 function renderTable(records) {
     if (!records.length) { tableBody.innerHTML = `<tr><td colspan="5" class="empty-cell">${certifications.length ? "No certifications match these filters." : "No certifications yet. Add your first record above."}</td></tr>`; return; }
     tableBody.innerHTML = records.map((certification) => {
-        const countdown = certification.daysUntilExpiry < 0 ? `${Math.abs(certification.daysUntilExpiry)} days ago` : `${certification.daysUntilExpiry} days left`;
+        const days = certification.daysUntilExpiry;
+        const lead = days < 0 ? `Expired ${Math.abs(days)} days ago` : days === 0 ? "Expires today" : `${days} days left`;
+        const countdown = `<span class="runway-lead">${lead}</span><span class="runway-sub">Expires ${escapeHtml(certification.expiryDate)}</span>`;
         const skills = (certification.skillTags || []).map((skill) => `<span class="skill-tag">${escapeHtml(skill)}</span>`).join("");
-        return `<tr><td><div class="credential-title">${escapeHtml(certification.title)}</div><span class="muted">Issued ${escapeHtml(certification.issueDate)}</span></td><td>${escapeHtml(certification.issuer)}</td><td>${escapeHtml(certification.expiryDate)}<br><span class="countdown">${countdown}</span></td><td><span class="badge ${escapeHtml(certification.status)}">${escapeHtml(certification.status.replace("_", " "))}</span></td><td>${skills}</td></tr>`;
+        const title = certification.credentialUrl
+            ? `<a href="${escapeHtml(certification.credentialUrl)}" target="_blank" rel="noopener">${escapeHtml(certification.title)}</a>`
+            : escapeHtml(certification.title);
+        return `<tr>`
+            + `<td><div class="credential-title">${title}</div><span class="muted">Issued ${escapeHtml(certification.issueDate)}</span></td>`
+            + `<td>${escapeHtml(certification.issuer)}</td>`
+            + `<td>${renderRunway(certification)}<span class="runway-caption">${countdown}</span></td>`
+            + `<td><span class="badge ${escapeHtml(certification.status)}">${escapeHtml(certification.status.replace("_", " "))}</span></td>`
+            + `<td>${skills}</td>`
+            + `</tr>`;
     }).join("");
+}
+
+function renderRunway(certification) {
+    const total = daysBetween(certification.issueDate, certification.expiryDate);
+    const elapsed = total - certification.daysUntilExpiry;
+    const fill = total > 0 ? Math.max(0, Math.min(100, (elapsed / total) * 100)) : 100;
+    const tone = certification.status === "EXPIRED" ? "is-expired" : certification.status === "EXPIRING_SOON" ? "is-warning" : "";
+    return `<div class="runway ${tone}"><div class="runway-track"><div class="runway-fill" style="--fill:${fill.toFixed(1)}%"></div></div></div>`;
+}
+
+function daysBetween(startIso, endIso) {
+    const day = 86400000;
+    return Math.round((new Date(endIso) - new Date(startIso)) / day);
 }
 
 function renderSkillChart() {
@@ -94,7 +118,7 @@ function renderSkillChart() {
     if (skillChart) skillChart.destroy();
     $("chart-empty").hidden = !Object.keys(counts).length;
     if (!Object.keys(counts).length) return;
-    skillChart = new Chart($("skill-chart"), {type: "bar", data: {labels: Object.keys(counts), datasets: [{data: Object.values(counts), backgroundColor: "#27694d", borderRadius: 4, barThickness: 16}]}, options: {indexAxis: "y", responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {x: {beginAtZero: true, ticks: {precision: 0}, grid: {color: "#edf0ec"}}, y: {grid: {display: false}, ticks: {color: "#71807b", font: {family: "Manrope"}}}}}});
+    skillChart = new Chart($("skill-chart"), {type: "bar", data: {labels: Object.keys(counts), datasets: [{data: Object.values(counts), backgroundColor: "#16222f", hoverBackgroundColor: "#e0533b", borderRadius: 3, barThickness: 15}]}, options: {indexAxis: "y", responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}, tooltip: {backgroundColor: "#16222f", padding: 10, cornerRadius: 8, titleFont: {family: "IBM Plex Mono", size: 11}, bodyFont: {family: "Inter Tight"}}}, scales: {x: {beginAtZero: true, ticks: {precision: 0, color: "#64717f", font: {family: "IBM Plex Mono", size: 10}}, grid: {color: "#e6eaf0"}}, y: {grid: {display: false}, ticks: {color: "#34414f", font: {family: "Inter Tight", size: 12}}}}}});
 }
 
 async function createCertification(event) {
