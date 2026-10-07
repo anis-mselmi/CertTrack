@@ -53,17 +53,4 @@ java -jar target/certtrack-0.0.1-SNAPSHOT.jar
 4. `JwtAuthenticationFilter` validates the token; `CertificationController` → `CertificationService` → `CertificationRepository` → H2/PostgreSQL.
 5. Errors are normalized by `GlobalExceptionHandler` into `ErrorResponse` JSON.
 
-## Project layout
 
-```
-src/main/java/com/certtrack
-├── CertTrackApplication.java      # entry point
-├── auth/                          # AuthController, JwtService, JwtAuthenticationFilter
-├── certification/                 # Controller, Service, Repository, Entity, DTOs
-├── common/                        # exceptions + GlobalExceptionHandler
-└── config/                        # SecurityConfig, WebController
-src/main/resources
-├── templates/dashboard.html       # SPA shell
-├── static/js/dashboard.js         # frontend logic
-└── application.properties         # dev (H2) + prod (PostgreSQL) profiles
-```
