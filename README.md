@@ -38,10 +38,13 @@ Default login: `admin` / `password`. Data lives in memory and resets on restart 
 ```bash
 SPRING_PROFILES_ACTIVE=prod \
 DATABASE_URL=jdbc:postgresql://<host>:5432/certtrack \
-DATABASE_USERNAME=certtrack DATABASE_PASSWORD=<secret> \
-CERTTRACK_JWT_SECRET=<32+ char secret> CERTTRACK_PASSWORD=<admin pw> \
+DATABASE_USERNAME=certtrack DATABASE_PASSWORD=<database-password> \
+CERTTRACK_USERNAME=admin CERTTRACK_PASSWORD=<admin-password> \
+CERTTRACK_JWT_SECRET=<at-least-32-byte-random-secret> \
 java -jar target/certtrack-0.0.1-SNAPSHOT.jar
 ```
+
+All five credential variables are required by the `prod` profile; the app will not fall back to the development credentials. Generate a signing secret with `openssl rand -base64 48` and keep it private. The production profile validates the existing database schema rather than creating or updating it, so apply your schema before starting the app.
 
 ---
 
@@ -52,5 +55,4 @@ java -jar target/certtrack-0.0.1-SNAPSHOT.jar
 3. Dashboard calls `/api/certifications` and `/api/certifications/summary` with the token.
 4. `JwtAuthenticationFilter` validates the token; `CertificationController` → `CertificationService` → `CertificationRepository` → H2/PostgreSQL.
 5. Errors are normalized by `GlobalExceptionHandler` into `ErrorResponse` JSON.
-
 
